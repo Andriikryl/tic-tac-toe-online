@@ -1,39 +1,38 @@
-export type Game = GameIdle | GameInProgress | GameOver | GameOverDrow
+export type GameEntity = GameIdleEntity | GameInProgressEntity | GameOverEntity | GameOverDrawEntity
 
-export type GameIdle = {
+export type GameIdleEntity = {
     id: string,
-    creator: Player,
-    type: "idle"
+    players: PlayerEntity[],
+    status: "idle"
 }
-export type GameInProgress = {
+export type GameInProgressEntity = {
     id: string,
-    players: Player[],
-    field: Field[],
-    type: "in-progress"
+    players: PlayerEntity[],
+    field: Field,
+    status: "inProgress"
 }
-export type GameOver = {
+export type GameOverEntity = {
     id: string,
-    players: Player[],
-    field: Field[],
-    type: "game-over"
-    winner: Player
-}
-
-export type GameOverDrow = {
-    id: string,
-    players: Player[],
-    field: Field[],
-    type: "game-over-drow"
-
+    players: PlayerEntity[],
+    field: Field,
+    status: "gameOver"
+    winner: PlayerEntity
 }
 
-export type Player = {
+export type GameOverDrawEntity = {
+    id: string,
+    players: PlayerEntity[],
+    field: Field,
+    status: "gameOverDraw"
+
+}
+
+export type PlayerEntity = {
     id: string,
     login: string,
     rating: number,
 }
 
 export type Field = Cell[]
-
 export type Cell = GameSymbol | null
 export type GameSymbol = string
