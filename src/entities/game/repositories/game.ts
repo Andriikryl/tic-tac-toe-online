@@ -1,10 +1,11 @@
 import { prisma } from "@/shared/lib/db";
-import {  GameEntity, GameIdleEntity, GameInProgressEntity, GameOverDrawEntity, GameOverEntity } from "../domain";
-import { Game, User } from "@prisma/client";
+import {  GameEntity, GameIdleEntity, GameOverEntity } from "../domain";
+import { Game, Prisma, User } from "@prisma/client";
 import {z} from "zod"
 
-async function gamestList():Promise<GameEntity[]> {
+async function gamestList(where: Prisma.GameWhereInput):Promise<GameEntity[]> {
         const games = await prisma.game.findMany({
+            where,
           include: {
               winner: true,
               players: true,
@@ -28,13 +29,14 @@ function dbGameToEntity(game: Game & {
                 status: game.status
             } satisfies GameIdleEntity
         }
-        case "inProgress": {
+        case "inProgress": 
+        case "gameOverDraw": {
             return {
                 id: game.id,
                 players: game.players,
                 status: game.status,
                 field: fieldSchema.parse(game.field)
-            } satisfies GameInProgressEntity
+            } 
         }
         case "gameOver": {
             if(!game.winner){
@@ -47,14 +49,6 @@ function dbGameToEntity(game: Game & {
                 field: fieldSchema.parse(game.field),
                 winner: game.winner
             } satisfies GameOverEntity
-        }
-        case "gameOverDraw": {
-            return {
-                id: game.id,
-                players: game.players,
-                status: game.status,
-                field: fieldSchema.parse(game.field)
-            } satisfies GameOverDrawEntity
         }
     }
 }
