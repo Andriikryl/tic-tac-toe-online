@@ -11,7 +11,6 @@ async function gamestList(where: Prisma.GameWhereInput):Promise<GameEntity[]> {
               players: true,
           }
         })
-
         return games.map(dbGameToEntity)
 }
 
@@ -23,9 +22,13 @@ function dbGameToEntity(game: Game & {
 }):GameEntity{
     switch(game.status){
         case "idle": {
+            const [creator] = game.players
+            if(!creator){
+                throw new Error("creator should be in the game idle")
+            }
             return {
                 id: game.id,
-                players: game.players,
+                creator: creator, 
                 status: game.status
             } satisfies GameIdleEntity
         }

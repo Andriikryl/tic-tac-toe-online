@@ -5,5 +5,5 @@ export async function getIdleGames (): Promise<GameIdleEntity[]> {
   const games = await gameRepository.gamestList({
     status: "idle"
 })
-return games as GameIdleEntity[];
+  return games as GameIdleEntity[];
 }
