@@ -7,6 +7,13 @@ async function main() {
       rating: 1111,
       passwordHash: "asdsad2314asdasd123"  
     }
+  })  
+  const user2 = await prisma.user.create({
+    data: {
+      login: 'super user 2',
+      rating: 1111,
+      passwordHash: "asdsa222d2314asdasd123"  
+    }
   })   
   await prisma.game.create({
     data: {
@@ -25,7 +32,7 @@ async function main() {
       status: 'idle',
       players: {
         connect: {
-          id: user.id,
+          id: user2.id,
         }
       }
     }

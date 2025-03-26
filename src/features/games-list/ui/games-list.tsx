@@ -1,5 +1,5 @@
 import { getIdleGames } from "@/entities/game/server";
-import { Card, CardContent, CardTitle } from "@/shared/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/shared/ui/card";
 
 export async function GamesList() {
 const games = await getIdleGames()
@@ -10,7 +10,9 @@ return (
             games.map((game) => {
                 return (
         <Card key={game.id}>
-            <CardTitle>Organizetor: {game.creator.login}</CardTitle>
+            <CardHeader>
+            <CardTitle>Game with: {game.creator.login}</CardTitle>
+            </CardHeader>
             <CardContent>
                <p>Raiteng: {game.creator.rating}</p>
             </CardContent>
