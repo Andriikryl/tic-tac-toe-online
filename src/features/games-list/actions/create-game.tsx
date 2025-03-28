@@ -1,14 +1,12 @@
 "use server"
 import { createGame } from "@/entities/game/server"
 import { prisma } from "@/shared/lib/db"
+import { left } from "@/shared/lib/either"
 
 export const reateGameAction = async () => {
     const user = await prisma.user.findFirst()
     if(!user){
-        return {
-            type: "error",
-            error: "user-not-founde"
-        } as const
+       return left("user not found!" as const)
     }
    const gameResult =  await createGame(user)
    return gameResult
