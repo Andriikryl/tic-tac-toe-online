@@ -1,31 +1,55 @@
-export type Left<E> = {
-    type: 'left',
-    error: E
-};
-
-export type Right<V> = {
-    type: 'right',
-    value: V
-};
-
-export type Either<E, V> = Left<E> | Right<V>;
-
-export const left = <E>(error: E): Left<E> => ({
+export type Left<L> = {
+    type: "left";
+    error: L;
+  };
+  
+  export type Right<R> = {
+    type: "right";
+    value: R;
+  };
+  
+  export type Either<L, R> = Left<L> | Right<R>;
+  
+  export const left = <const L>(error: L): Left<L> => ({
+    error,
     type: "left",
-    error
-});
-
-export const right = <V>(value: V): Right<V> => ({
+  });
+  export const right = <const R>(value: R): Right<R> => ({
     type: "right",
-    value
-});
-
-export const mapEither = <E, V, V2>(
-    either: Either<E, V>,
-    fn: (value: V) => V2
-): Either<E, V2> => {
+    value: value,
+  });
+  
+  export const mapRight = <R, R2, L = unknown>(
+    either: Either<L, R>,
+    fn: (value: R) => R2,
+  ): Either<L, R2> => {
     if (either.type === "right") {
-        return { type: "right", value: fn(either.value) };
+      return right(fn(either.value));
     }
+  
     return either;
-};
+  };
+  export const mapLeft = <R, L, L2>(
+    either: Either<L, R>,
+    fn: (value: L) => L2,
+  ): Either<L2, R> => {
+    if (either.type === "left") {
+      return left(fn(either.error));
+    }
+  
+    return either;
+  };
+  
+  export const matchEither = <L, R, V>(
+    either: Either<L, R>,
+    mathers: {
+      left: (error: NoInfer<L>) => V;
+      right: (value: NoInfer<R>) => V;
+    },
+  ): V => {
+    if (either.type === "left") {
+      return mathers.left(either.error);
+    }
+  
+    return mathers.right(either.value);
+  };
