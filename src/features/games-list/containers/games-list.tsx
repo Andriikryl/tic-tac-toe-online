@@ -7,7 +7,7 @@ export async function GamesList() {
   const games = await getIdleGames();
   return (
     <Layout
-    extions={<CreateButton/>}
+    extions={<CreateButton action={}/>}
     >
       {games.map((game) => (
         <GameCard
