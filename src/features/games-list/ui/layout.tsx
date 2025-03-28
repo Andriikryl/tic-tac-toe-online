@@ -1,9 +1,14 @@
-import { PropsWithChildren } from "react";
-
-export  function Layout({children}: PropsWithChildren) {
+export function Layout({
+  children,
+  extions,
+}: {
+  children: React.ReactNode;
+  extions: React.ReactNode;
+}) {
   return (
     <div>
-        {children}
+      <div>{extions}</div>
+      {children}
     </div>
   );
 }
