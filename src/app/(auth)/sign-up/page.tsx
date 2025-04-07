@@ -35,7 +35,6 @@ export default function SignUp() {
           </div>
         </CardFooter>
       </Card>
-   
   )
 }
 
