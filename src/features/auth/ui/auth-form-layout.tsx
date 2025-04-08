@@ -12,7 +12,7 @@ export function AuthFormLayout({
   filds,
   actions,
   link,
-  onSubmit,
+  action,
   error,
 }: {
   title: string;
@@ -21,7 +21,7 @@ export function AuthFormLayout({
   actions: React.ReactNode;
   link: React.ReactNode;
   error: React.ReactNode;
-  onSubmit: React.FormEventHandler<HTMLFormElement>;
+  action: (formData:FormData) => void
 }) {
   return (
     <Card className="w-full max-w-md">
@@ -31,14 +31,14 @@ export function AuthFormLayout({
         </CardTitle>
         <CardDescription className="text-center">{description}</CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
-        <form action="" onSubmit={onSubmit}>
+      <CardContent className="space-y-4 ">
+        <form action={action} className="flex flex-col gap-2">
           {filds}
           {error}
+        {actions}
         </form>
       </CardContent>
       <CardFooter className="flex flex-col space-y-4">
-        {actions}
         {link}
       </CardFooter>
     </Card>
