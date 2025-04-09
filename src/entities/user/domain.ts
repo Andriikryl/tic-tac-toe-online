@@ -13,4 +13,4 @@ export type SessionEntity = {
     login: string,
 }
 
-export const DEFAULT_REATING = 1000
+export const DEFAULT_RATING = 1000
