@@ -14,3 +14,10 @@ export type SessionEntity = {
 }
 
 export const DEFAULT_RATING = 1000
+
+export const userToSession = (user:UserEntity):SessionEntity => {
+    return {
+        id: user.id,
+        login: user.login
+    }
+}

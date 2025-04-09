@@ -1,6 +1,28 @@
-import { left } from "@/shared/lib/either"
+import { createUser } from "@/entities/user/server";
+import { left, mapLeft } from "@/shared/lib/either";
+import { z } from "zod";
+
+const formDataSchema = z.object({
+  login: z.string().min(3),
+  password: z.string().min(3),
+});
 
 export const signUpAction = async (state: unknown, formData: FormData) => {
-    console.log(formData.get('login'), formData.get('password'))
-    return left("login-allredy-taken" as const)
-}
+  console.log(formData.get("login"), formData.get("password"));
+
+  const data = Object.fromEntries(formData.entries());
+
+  const result = formDataSchema.safeParse(data);
+
+  if (!result.success) {
+    return left(`${result.error.message}`);
+  }
+
+  const createUserResult = await createUser(result.data);
+
+  return mapLeft(createUserResult, (error) => {
+    return {
+      "user-login-exists": "user whith this login allredy exist",
+    }[error];
+  });
+};
