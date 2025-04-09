@@ -12,3 +12,5 @@ export type SessionEntity = {
     id: UserId,
     login: string,
 }
+
+export const DEFAULT_REATING = 1000
