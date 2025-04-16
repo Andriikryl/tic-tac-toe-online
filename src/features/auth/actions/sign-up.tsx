@@ -1,7 +1,5 @@
 "use server"
-
 import { createUser, sessionService } from "@/entities/user/server";
-import { left, mapLeft } from "@/shared/lib/either";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 
@@ -10,7 +8,16 @@ const formDataSchema = z.object({
   password: z.string().min(3),
 });
 
-export const signUpAction = async (state: unknown, formData: FormData) => {
+export type SignUpFormState = {
+  formData?: FormData;
+  errors?: {
+    login?: string;
+    password?: string;
+    _errors?: string;
+  };
+};
+
+export const signUpAction = async (state: SignUpFormState, formData: FormData): Promise<SignUpFormState> => {
   console.log(formData.get("login"), formData.get("password"));
 
   const data = Object.fromEntries(formData.entries());
@@ -18,7 +25,16 @@ export const signUpAction = async (state: unknown, formData: FormData) => {
   const result = formDataSchema.safeParse(data);
 
   if (!result.success) {
-    return left(`errror validation: ${result.error.message}`);
+    const formatedErrors = result.error.format();
+
+    return {
+      formData,
+      errors: {
+        login: formatedErrors.login?._errors.join(", "),
+        password: formatedErrors.password?._errors.join(", "),
+        _errors: formatedErrors.login?._errors.join(", "),
+      },
+    };
   }
 
   const createUserResult = await createUser(result.data);
@@ -29,9 +45,14 @@ export const signUpAction = async (state: unknown, formData: FormData) => {
     redirect("/")
   }
 
-  return mapLeft(createUserResult, (error) => {
-    return {
-      "user-login-exists": "user whith this login allredy exist",
-    }[error];
-  });
+  const errors = {
+    "user-login-exists": "user whith this login allredy exist",
+  }[createUserResult.error];
+
+  return {
+    formData,
+    errors: {
+      _errors: errors,
+    },
+  };
 };
