@@ -1,6 +1,6 @@
 "use server"
 
-import { createUser, sessionService } from "@/entities/user/server";
+import { ferifyUserPassword, sessionService } from "@/entities/user/server";
 import { left, mapLeft } from "@/shared/lib/either";
 import { redirect } from "next/navigation";
 import { z } from "zod";
@@ -10,7 +10,7 @@ const formDataSchema = z.object({
   password: z.string().min(3),
 });
 
-export const signUpAction = async (state: unknown, formData: FormData) => {
+export const signInAction = async (state: unknown, formData: FormData) => {
   console.log(formData.get("login"), formData.get("password"));
 
   const data = Object.fromEntries(formData.entries());
@@ -21,17 +21,17 @@ export const signUpAction = async (state: unknown, formData: FormData) => {
     return left(`errror validation: ${result.error.message}`);
   }
 
-  const createUserResult = await createUser(result.data);
+  const verifyUserResult = await ferifyUserPassword(result.data);
 
-  if(createUserResult.type === 'right'){
-    await sessionService.addSession(createUserResult.value)
+  if(verifyUserResult.type === 'right'){
+    await sessionService.addSession(verifyUserResult.value)
 
     redirect("/")
   }
 
-  return mapLeft(createUserResult, (error) => {
+  return mapLeft(verifyUserResult, (error) => {
     return {
-      "user-login-exists": "user whith this login allredy exist",
+      "wrong-login-or-password": "Do not correct password or login",
     }[error];
   });
 };

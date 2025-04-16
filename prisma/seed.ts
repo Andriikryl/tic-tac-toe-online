@@ -15,6 +15,7 @@ async function main() {
       passwordHash: "asdsa222d2314asdasd123"  
     }
   })   
+  
   // await prisma.game.create({
   //   data: {
   //     field: Array(9).fill(null),
