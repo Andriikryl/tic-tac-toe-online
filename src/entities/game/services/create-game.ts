@@ -5,7 +5,8 @@ import cuid from "cuid"
 export async function createGame (player: PlayerEntity) {
 
     const playersGams = await gameRepository.gamestList({
-        players: {some :{ id: player.id}}
+        players: {some :{ id: player.id}},
+        status: "idle"
     })
     const isGameInIdleStatus = playersGams.some((game) => game.status === "idle" && game.creator.id === player.id)
      if(isGameInIdleStatus){
@@ -15,7 +16,8 @@ export async function createGame (player: PlayerEntity) {
   const createdGame = await gameRepository.createGame({
     id: cuid(),
     creator: player,
-    status: "idle"
+    status: "idle",
+    field: Array(9).fill(null)
 })
   return right(createdGame)
 }
